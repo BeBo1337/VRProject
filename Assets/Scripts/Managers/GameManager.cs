@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DataTypes;
 using Framework;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Managers
@@ -10,8 +11,8 @@ namespace Managers
     public class GameManager : MonoBehaviour
     {
         [Header("Enemy Settings")]
-        [SerializeField] private List<Material> _materialsByHP;
-        [SerializeField] private List<EnemySpawnPoint> _spawnPoints;
+        [SerializeField] private List<EnemySpawnPoint> _spawnPointsLVL1;
+        [SerializeField] private List<EnemySpawnPoint> _spawnPointsLVL2;
         [SerializeField] private float _minimumDelayBetweenSpanws;
         [SerializeField] private float _maxDelayBetweenSpanws;
         // TODO: difficulty multiplier
@@ -90,29 +91,10 @@ namespace Managers
         private void SpawnNewEnemy()
         {
             var newEnemy = EnemySpawner.BaseInstance.Spawn();
-            var spawnPoint = _spawnPoints.GetRandom();
-            newEnemy.Initialize(spawnPoint.transform.position, GetRandomEnemyHealth());
+            var spawnPoint = _spawnPointsLVL1.GetRandom();
+            newEnemy.Initialize(spawnPoint.transform.position, 4);
             newEnemy.UpdateMoving(true);
             AudioManager.Instance.PlaySoundEffect(spawnPoint.AudioSource, SoundType.EnemySpawn);
-        }
-
-        private int GetRandomEnemyHealth()
-        {
-            return Random.Range(1, _materialsByHP.Count + 1);
-        }
-
-        public Material GetEnemyMaterial(int remainingHealth)
-        {
-            var index = remainingHealth - 1;
-            var materialShouldExist = index > -1 && index < _materialsByHP.Count;
-            if (materialShouldExist)
-            {
-                return _materialsByHP[index];   
-            }
-            else
-            {
-                return null;
-            }
         }
         
         public void BulletHitEnemy(Bullet bullet, Enemy enemy)
@@ -121,7 +103,7 @@ namespace Managers
             var shouldDestroy = enemy.ReduceHealth();
             if (shouldDestroy)
             {
-                enemy.Explode();
+                enemy.Die();
                 EnemySpawner.BaseInstance.Release(enemy);
                 
                 // increase score + hud

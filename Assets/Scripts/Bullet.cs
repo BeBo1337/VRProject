@@ -41,12 +41,35 @@ public class Bullet : MonoBehaviour
         _rigidbody.MovePosition(worldPosition);
     }
 
-    private void OnCollisionEnter(Collision other)
+    private void OnTriggerEnter(Collider other)
     {
         var hitAnEnemy = other.gameObject.CompareTag(GameManager.Instance.EnemyTag);
         if (hitAnEnemy)
         {
-            GameManager.Instance.BulletHitEnemy(this, other.gameObject.GetComponent<Enemy>());
+            Enemy enemy = FindEnemyInHierarchy(other.gameObject);
+            if (enemy != null)
+            {
+                GameManager.Instance.BulletHitEnemy(this, enemy);
+            }
         }
     }
+
+    private Enemy FindEnemyInHierarchy(GameObject gameObject)
+    {
+        Transform currentTransform = gameObject.transform;
+    
+        while (currentTransform != null)
+        {
+            Enemy enemyComponent = currentTransform.GetComponent<Enemy>();
+            if (enemyComponent != null)
+            {
+                return enemyComponent;
+            }
+        
+            currentTransform = currentTransform.parent;
+        }
+    
+        return null; // No Enemy component found in the hierarchy.
+    }
+
 }

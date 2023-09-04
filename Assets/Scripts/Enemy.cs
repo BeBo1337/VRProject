@@ -6,9 +6,7 @@ using XRCardboard;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private Transform _rotatingTransform;
-    [SerializeField] private float _rotationSpeed;
     [SerializeField] private float _movementSpeed;
-    [SerializeField] private Renderer _renderer;
     [SerializeField] private AudioSource _audioSource;
 
     private int _health;
@@ -16,14 +14,7 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        RotateAroundSelf();
         MoveTowardsPlayer();
-    }
-
-    private void RotateAroundSelf()
-    {
-        var rotationDelta = _rotationSpeed * Time.deltaTime;
-        _rotatingTransform.Rotate(Vector3.up, rotationDelta);
     }
     
     private void MoveTowardsPlayer()
@@ -31,11 +22,18 @@ public class Enemy : MonoBehaviour
         if (_isMoving)
         {
             var target = XRCardboardController.Instance.CameraTransform;
-            var newPosition = Vector3.MoveTowards(transform.position, target.position, 
-                _movementSpeed * Time.deltaTime);
-            _rotatingTransform.position = newPosition;   
+            var targetPosition = target.position;
+            targetPosition.y = 0;
+
+            // Calculate the new position as before
+            var newPosition = Vector3.MoveTowards(transform.position, targetPosition, _movementSpeed * Time.deltaTime);
+            _rotatingTransform.position = newPosition;
+
+            // Make the object look at the target position
+            _rotatingTransform.LookAt(targetPosition);
         }
     }
+
 
     public void UpdateMoving(bool isMoving)
     {
@@ -46,29 +44,18 @@ public class Enemy : MonoBehaviour
     {
         _rotatingTransform.position = spawnPointPosition;
         _health = startingHealth;
-        UpdateMaterial();
     }
-
-    private void UpdateMaterial()
-    {
-        var material = GameManager.Instance.GetEnemyMaterial(_health);
-        if (material != null)
-        {
-            _renderer.material = material;   
-        }
-    }
-
+    
     public bool ReduceHealth()
     {
         _health--;
-        UpdateMaterial();
         var shouldDestory = _health <= 0;
         return shouldDestory;
     }
 
-    public void Explode()
+    public void Die()
     {
-        AudioManager.Instance.PlaySoundEffect(SoundType.EnemyExplosion);
-        // TODO: effect
+        // AudioManager.Instance.PlaySoundEffect(SoundType.EnemyExplosion);
+        // TODO: effect , sound , animation 
     }
 }
