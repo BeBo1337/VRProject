@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - EnemyArm
+  - EnemyLeg
+  - EnemyTorso
+  - EnemyHead
   layers:
   - Default
   - TransparentFX

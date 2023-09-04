@@ -92,23 +92,35 @@ namespace Managers
         {
             var newEnemy = EnemySpawner.BaseInstance.Spawn();
             var spawnPoint = _spawnPointsLVL1.GetRandom();
+            
+            //resets the position of the zombie from the pool
+            Vector3 spawnPosition = spawnPoint.transform.position;
+            newEnemy.transform.position = spawnPosition;
+            
             newEnemy.Initialize(spawnPoint.transform.position, 4);
             newEnemy.UpdateMoving(true);
+            
+            Debug.Log("Spawned zombie at position: " + spawnPosition);
             AudioManager.Instance.PlaySoundEffect(spawnPoint.AudioSource, SoundType.EnemySpawn);
         }
         
-        public void BulletHitEnemy(Bullet bullet, Enemy enemy)
+        public void BulletHitEnemy(Bullet bullet, Enemy enemy, HitType bodyPartHit)
         {
             BulletSpawner.BaseInstance.Release(bullet);
-            var shouldDestroy = enemy.ReduceHealth();
-            if (shouldDestroy)
+            if (!enemy.isDead)
             {
-                enemy.Die();
-                EnemySpawner.BaseInstance.Release(enemy);
-                
-                // increase score + hud
-                _score++;
-                PlayerHUDManager.Instance.SetScore(_score);
+                var shouldDestroy = enemy.ReduceHealth(bodyPartHit);
+                if (shouldDestroy)
+                {
+                    // increase score + hud
+                    _score++;
+                    PlayerHUDManager.Instance.SetScore(_score);
+                    enemy.Die();
+                }
+                else
+                {
+                    enemy.Hit();
+                }
             }
         }
 

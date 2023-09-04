@@ -43,13 +43,13 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        var hitAnEnemy = other.gameObject.CompareTag(GameManager.Instance.EnemyTag);
-        if (hitAnEnemy)
+        HitType bodyPartHit = hitEnemyWhere(other.gameObject.tag);
+        if (bodyPartHit != HitType.Invalid)
         {
             Enemy enemy = FindEnemyInHierarchy(other.gameObject);
             if (enemy != null)
             {
-                GameManager.Instance.BulletHitEnemy(this, enemy);
+                GameManager.Instance.BulletHitEnemy(this, enemy, bodyPartHit);
             }
         }
     }
@@ -70,6 +70,23 @@ public class Bullet : MonoBehaviour
         }
     
         return null; // No Enemy component found in the hierarchy.
+    }
+
+    private HitType hitEnemyWhere(string tag)
+    {
+        switch (tag)
+        {
+            case "EnemyArm":
+                return HitType.LimbShot;
+            case "EnemyLeg":
+                return HitType.LimbShot;
+            case "EnemyTorso":
+                return HitType.BodyShot;
+            case "EnemyHead":
+                return HitType.HeadShot;
+            default:
+                return HitType.Invalid;
+        }
     }
 
 }
