@@ -84,15 +84,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6be84e4d7829855419c06b94e56bd135, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 6804990658058999119, guid: e3fcdb8aebb4ea647a367011610d1ec0, type: 3}
-  casingPrefab: {fileID: 4362657251999731927, guid: 4cb20e8abae957146a8b78e670d3fe74, type: 3}
+  casingPrefab: {fileID: 6804990658058999119, guid: e3fcdb8aebb4ea647a367011610d1ec0, type: 3}
   muzzleFlashPrefab: {fileID: 1782395880954752, guid: 3dd9cf2e209c504448f1c4c6835675cf, type: 3}
   gunAnimator: {fileID: 3339811231522562192}
   barrelLocation: {fileID: 3942582856445837448}
   casingExitLocation: {fileID: 5512466676562281669}
   destroyTimer: 2
-  shotPower: 100
-  ejectPower: 250
+  ejectPower: 150
 --- !u!4 &5512466676562281669 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1267406449795952462, guid: 5c59210965ffbcc4093fe99a29edb777, type: 3}

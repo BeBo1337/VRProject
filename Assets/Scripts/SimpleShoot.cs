@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Managers;
 
 [AddComponentMenu("Nokobot/Modern Guns/Simple Shoot")]
 public class SimpleShoot : MonoBehaviour
@@ -28,7 +29,7 @@ public class SimpleShoot : MonoBehaviour
     void Update()
     {
         //If you want a different input, change it here
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1") && GameManager.Instance.IsPlaying)
         {
             //Calls animation on the gun that has the relevant animation events that will fire
             gunAnimator.SetTrigger("Fire");
@@ -39,20 +40,23 @@ public class SimpleShoot : MonoBehaviour
     //This function creates the bullet behavior
     void Shoot()
     {
-        if (muzzleFlashPrefab)
+        if (GameManager.Instance.IsPlaying)
         {
-            //Create the muzzle flash
-            GameObject tempFlash;
-            tempFlash = Instantiate(muzzleFlashPrefab, barrelLocation.position, barrelLocation.rotation);
+            if (muzzleFlashPrefab)
+            {
+                //Create the muzzle flash
+                GameObject tempFlash;
+                tempFlash = Instantiate(muzzleFlashPrefab, barrelLocation.position, barrelLocation.rotation);
 
-            //Destroy the muzzle flash effect
-            Destroy(tempFlash, destroyTimer);
+                //Destroy the muzzle flash effect
+                Destroy(tempFlash, destroyTimer);
+            }
+
+            // Creating a bullet and adding force to it in direction of the barrel
+            var newBullet = BulletSpawner.BaseInstance.Spawn();
+            newBullet.SetPosition(barrelLocation.position);
+            newBullet.ShootInDirection(barrelLocation.transform.forward);
         }
-
-        // Creating a bullet and adding force to it in direction of the barrel
-        var newBullet = BulletSpawner.BaseInstance.Spawn();
-        newBullet.SetPosition(barrelLocation.position);
-        newBullet.ShootInDirection(barrelLocation.transform.forward);
     }
 
     //This function creates a casing at the ejection slot

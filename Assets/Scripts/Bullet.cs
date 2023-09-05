@@ -12,6 +12,10 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float _forceMultiplier;
     [SerializeField] private float _timeout;
 
+    protected const string EnemyArm = "EnemyArm";
+    protected const string EnemyLeg = "EnemyLeg";
+    protected const string EnemyTorso = "EnemyTorso";
+    protected const string EnemyHead = "EnemyHead";
     private void OnEnable()
     {
         StartCoroutine(Timeout());
@@ -76,13 +80,13 @@ public class Bullet : MonoBehaviour
     {
         switch (tag)
         {
-            case "EnemyArm":
+            case EnemyArm:
                 return HitType.LimbShot;
-            case "EnemyLeg":
+            case EnemyLeg:
                 return HitType.LimbShot;
-            case "EnemyTorso":
+            case EnemyTorso:
                 return HitType.BodyShot;
-            case "EnemyHead":
+            case EnemyHead:
                 return HitType.HeadShot;
             default:
                 return HitType.Invalid;
