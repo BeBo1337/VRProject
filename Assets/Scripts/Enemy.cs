@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _movementSpeed;
     [SerializeField] private Animator _animator; 
     [SerializeField] private AudioSource _audioSource;
-
+    
     private int _health;
     private bool _isMoving;
     public bool isDead;
@@ -23,10 +23,13 @@ public class Enemy : MonoBehaviour
     {
         if (_isMoving)
         {
-            var target = XRCardboardController.Instance.CameraTransform;
+            var target = Camera.main.transform;
             var targetPosition = target.position;
-            targetPosition.y = 0;
-
+            if(GameManager._level == 1)
+                 targetPosition.y = 0;
+            else if (GameManager._level == 2)
+                targetPosition.y = 4.1f;
+            
             // Calculate the new position as before
             var newPosition = Vector3.MoveTowards(transform.position, targetPosition, _movementSpeed * Time.deltaTime);
             _rotatingTransform.position = newPosition;
@@ -41,10 +44,12 @@ public class Enemy : MonoBehaviour
         _isMoving = isMoving;
     }
     
-    public void Initialize(Vector3 spawnPointPosition, int startingHealth)
+    public void Initialize(Vector3 spawnPointPosition, int startingHealth, float speed)
     {
         _rotatingTransform.position = spawnPointPosition;
         _health = startingHealth;
+        _movementSpeed = speed;
+        _animator.SetFloat("moveSpeed",speed);
     }
     
     public bool ReduceHealth(HitType bodyPartHit)
@@ -85,5 +90,10 @@ public class Enemy : MonoBehaviour
     {
         _isMoving = false;
         _animator.Play("ZombieHit");
+    }
+
+    public void OnZombieHitAnimationComplete()
+    {
+        _isMoving = true;
     }
 }

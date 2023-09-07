@@ -20,7 +20,9 @@ namespace Managers
         private float _timeToNextSpawn;
         private bool _isPlaying;
         public bool IsPlaying => _isPlaying;
-        
+
+        public static bool _gameOver = false;
+        public static int _level = 1;
         private int _score;
         private float _timer;
         
@@ -42,10 +44,10 @@ namespace Managers
 
         private void Start()
         {
-            StartGame();
+            StartLevel();
         }
 
-        private void StartGame()
+        private void StartLevel()
         {
             StartCoroutine(PlayerHUDManager.Instance.PlayCountdownAnimation());
             StartCoroutine(WaitForAnimation());
@@ -59,14 +61,13 @@ namespace Managers
 
         private void StartActualGame()
         {
-            AudioManager.Instance.PlayMusic(SoundType.BattleMusic);
-            ResetSession();
+            //AudioManager.Instance.PlayMusic(SoundType.BattleMusic);
             _isPlaying = true;
             SpawnNewEnemy();
             SetNextSpawnTime();
         }
 
-        private void ResetSession()
+        private void OnGameOver()
         {
             _score = 0;
             _timer = 0;
@@ -91,17 +92,39 @@ namespace Managers
         private void SpawnNewEnemy()
         {
             var newEnemy = EnemySpawner.BaseInstance.Spawn();
-            var spawnPoint = _spawnPointsLVL1.GetRandom();
+            var spawnPoint = getSpawner();
             
             //resets the position of the zombie from the pool
             Vector3 spawnPosition = spawnPoint.transform.position;
             newEnemy.transform.position = spawnPosition;
             
-            newEnemy.Initialize(spawnPoint.transform.position, 4);
+            newEnemy.Initialize(spawnPoint.transform.position, 4, getEnemySpeed());
             newEnemy.UpdateMoving(true);
             
-            Debug.Log("Spawned zombie at position: " + spawnPosition);
             AudioManager.Instance.PlaySoundEffect(spawnPoint.AudioSource, SoundType.EnemySpawn);
+        }
+
+        private float getEnemySpeed()
+        {
+            switch (_level)
+            {
+                case 1: return Random.Range(0.5f, 0.75f);
+                case 2: return Random.Range(0.65f, 1f);
+                default: return Random.Range(0.5f, 0.75f);
+            }
+        }
+
+        private EnemySpawnPoint getSpawner()
+        {
+            switch (_level)
+            {
+                case 1:
+                    return _spawnPointsLVL1.GetRandom();
+                case 2:
+                    return _spawnPointsLVL2.GetRandom();
+                default: 
+                    return _spawnPointsLVL1.GetRandom();
+            }
         }
         
         public void BulletHitEnemy(Bullet bullet, Enemy enemy, HitType bodyPartHit)
@@ -112,15 +135,40 @@ namespace Managers
                 var shouldDestroy = enemy.ReduceHealth(bodyPartHit);
                 if (shouldDestroy)
                 {
-                    // increase score + hud
+                    // increase score + hud + go to next level
                     _score++;
                     PlayerHUDManager.Instance.SetScore(_score);
                     enemy.Die();
+                    if (_score >= 2 && _level == 1)
+                    {
+                        PathFollowing.isMoving = true;
+                        _isPlaying = false;
+                        ReleaseAllEnemies();
+                        StartCoroutine(WaitForPathCompletion());
+                    }
                 }
                 else
                 {
                     enemy.Hit();
                 }
+            }
+        }
+        
+        private IEnumerator WaitForPathCompletion()
+        {
+            yield return new WaitUntil(() => !PathFollowing.isMoving);
+    
+            // After the path is completed, restart the level
+            StartLevel();
+            _level++;
+        }
+        
+        private void ReleaseAllEnemies()
+        {
+            Enemy[] enemies = FindObjectsOfType<Enemy>(); // Find all Enemy objects in the scene
+            foreach (Enemy enemy in enemies)
+            {
+                enemy.Die();
             }
         }
 

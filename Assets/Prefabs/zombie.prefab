@@ -2446,6 +2446,8 @@ MonoBehaviour:
   _movementSpeed: 0.5
   _animator: {fileID: -5210023341602289525}
   _audioSource: {fileID: 0}
+  _camera: {fileID: 8834930132807662053, guid: 0ea99ff20d355334db49415d73de1d62, type: 3}
+  isDead: 0
 --- !u!1 &8002949424670231845
 GameObject:
   m_ObjectHideFlags: 0
