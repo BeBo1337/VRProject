@@ -25,9 +25,7 @@ namespace Managers
         public static int _level = 1;
         private int _score;
         private float _timer;
-        
         public static GameManager Instance { get; private set; }
-        public string EnemyTag => "Enemy"; 
 
         protected void Awake()
         {

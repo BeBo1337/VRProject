@@ -129,8 +129,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 8188911605537612941}
-  _forceMultiplier: 20
-  _timeout: 2
+  _forceMultiplier: 5
+  _timeout: -12.73
 --- !u!1 &7227495776854297742
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,7 +184,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9606c2ef68ca75b40b6c787500c81eb1, type: 2}
+  - {fileID: 2100000, guid: 5ab421cd94396374ba165dd9926448fc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -205,7 +205,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.2
+  m_Time: 1
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -213,8 +213,8 @@ TrailRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.3424995
-        value: 0.016327977
+        time: 0.3444221
+        value: 0.007996678
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -223,7 +223,7 @@ TrailRenderer:
         outWeight: 0
       - serializedVersion: 3
         time: 0.61738586
-        value: 0.0056152344
+        value: 0.0014343262
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -269,5 +269,5 @@ TrailRenderer:
     shadowBias: 0.5
     generateLightingData: 0
   m_MinVertexDistance: 1
-  m_Autodestruct: 0
+  m_Autodestruct: 1
   m_Emitting: 1

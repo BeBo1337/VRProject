@@ -1,24 +1,21 @@
-using System;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public float currentHealth;
+    [SerializeField] public float _playerHealth = 100;
+    [SerializeField] private float _damageHit = 25f;
     public HealthBar healthBar;
 
     private void Awake()
-    {
-        // Initialize the health bar
-        currentHealth = 100;
-        healthBar.UpdateHealth(currentHealth);
+    {// Initialize the health bar
+        healthBar.UpdateHealth(_playerHealth);
     }
     
     public void TakeDamage()
     {
         // Subtract 25 hp on hit from current health
-        currentHealth -= 25f;
-
+        _playerHealth -= _damageHit;
         // Update the health bar with the new health value
-        healthBar.UpdateHealth(currentHealth);
+        healthBar.UpdateHealth(_playerHealth);
     }
 }

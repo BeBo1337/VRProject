@@ -10,7 +10,6 @@ public class HealthBar : MonoBehaviour
 
     public void UpdateHealth(float currentHealth)
     {
-        Debug.Log(currentHealth);
         // Ensure that the new health value stays within the valid range (0 - maxHealth)
         float clampedHealth = Mathf.Clamp(currentHealth, 0f, maxWidth);
 
@@ -22,6 +21,5 @@ public class HealthBar : MonoBehaviour
         Vector2 newSizeDelta = healthBarFill.sizeDelta;
         newSizeDelta.x = newWidth * 3;
         healthBarFill.sizeDelta = newSizeDelta;
-        Debug.Log(newSizeDelta.x);
     }
 }
