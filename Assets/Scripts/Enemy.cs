@@ -1,15 +1,18 @@
+using System;
 using DataTypes;
 using Managers;
 using UnityEngine;
+using UnityEngine.Serialization;
 using XRCardboard;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private Transform _rotatingTransform;
+    [SerializeField] private Transform _zombieTransform;
     [SerializeField] private float _movementSpeed;
     [SerializeField] private Animator _animator; 
     [SerializeField] private AudioSource _audioSource;
     
+    private PlayerHealth _playerHealth;
     private int _health;
     private bool _isMoving;
     public bool isDead;
@@ -32,24 +35,32 @@ public class Enemy : MonoBehaviour
             
             // Calculate the new position as before
             var newPosition = Vector3.MoveTowards(transform.position, targetPosition, _movementSpeed * Time.deltaTime);
-            _rotatingTransform.position = newPosition;
+            _zombieTransform.position = newPosition;
 
             // Make the object look at the target position
-            _rotatingTransform.LookAt(targetPosition);
+            _zombieTransform.LookAt(targetPosition);
         }
     }
 
-    public void UpdateMoving(bool isMoving)
+    private void OnTriggerEnter(Collider other)
     {
-        _isMoving = isMoving;
+        if (other.gameObject.tag.Equals("Player"))
+        {
+            _isMoving = false;
+            _animator.SetBool("attack",true);
+        }
     }
-    
+
     public void Initialize(Vector3 spawnPointPosition, int startingHealth, float speed)
     {
-        _rotatingTransform.position = spawnPointPosition;
+        if(_playerHealth == null)
+            _playerHealth = FindObjectOfType<PlayerHealth>();
+        _zombieTransform.LookAt(Camera.main.transform);
+        _zombieTransform.position = spawnPointPosition;
         _health = startingHealth;
         _movementSpeed = speed;
         _animator.SetFloat("moveSpeed",speed);
+        _animator.SetBool("attack",false);
     }
     
     public bool ReduceHealth(HitType bodyPartHit)
@@ -80,20 +91,27 @@ public class Enemy : MonoBehaviour
         _animator.Play("ZombieDie");
     }
     
+    public void Hit()
+    {
+        _isMoving = false;
+        _animator.Play("ZombieHit");
+    }
+    
     public void OnZombieDieAnimationComplete()
     {
         EnemySpawner.BaseInstance.Release(this);
         isDead = false;
     }
 
-    public void Hit()
-    {
-        _isMoving = false;
-        _animator.Play("ZombieHit");
-    }
-
     public void OnZombieHitAnimationComplete()
     {
         _isMoving = true;
     }
+
+    public void OnZombieAttackAnimationComplete()
+    {
+        _playerHealth.TakeDamage();
+    }
+
+
 }

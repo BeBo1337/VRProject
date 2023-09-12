@@ -2385,6 +2385,7 @@ GameObject:
   - component: {fileID: 7047487365581538899}
   - component: {fileID: -5210023341602289525}
   - component: {fileID: -1957564214803953297}
+  - component: {fileID: 3892223778886515370}
   m_Layer: 0
   m_Name: Zombie
   m_TagString: Enemy
@@ -2442,12 +2443,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: febaf6766aa742cc905636112e430bde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rotatingTransform: {fileID: 7047487365581538899}
+  _zombieTransform: {fileID: 7047487365581538899}
   _movementSpeed: 0.5
   _animator: {fileID: -5210023341602289525}
   _audioSource: {fileID: 0}
-  _camera: {fileID: 8834930132807662053, guid: 0ea99ff20d355334db49415d73de1d62, type: 3}
+  _gameManager: {fileID: 0}
   isDead: 0
+--- !u!136 &3892223778886515370
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7675933424556367081}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.6894809
+  m_Height: 1.3789618
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.5, z: 0.4}
 --- !u!1 &8002949424670231845
 GameObject:
   m_ObjectHideFlags: 0

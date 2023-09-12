@@ -99,8 +99,7 @@ namespace Managers
             newEnemy.transform.position = spawnPosition;
             
             newEnemy.Initialize(spawnPoint.transform.position, 4, getEnemySpeed());
-            newEnemy.UpdateMoving(true);
-            
+
             AudioManager.Instance.PlaySoundEffect(spawnPoint.AudioSource, SoundType.EnemySpawn);
         }
 
@@ -143,6 +142,7 @@ namespace Managers
                     {
                         PathFollowing.isMoving = true;
                         _isPlaying = false;
+                        _maxDelayBetweenSpanws = 4;
                         ReleaseAllEnemies();
                         StartCoroutine(WaitForPathCompletion());
                     }
