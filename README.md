@@ -7,5 +7,4 @@ need to implement before submitting:
 2. bullet trail fix.
 3. game logic and events (UX)
 4. main menu and game over menu (with scores that kept localy).
-5. make muzzleFlashPrefab pool of size 1.
 

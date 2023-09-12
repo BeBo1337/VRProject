@@ -130,7 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 8188911605537612941}
   _forceMultiplier: 5
-  _timeout: -12.73
+  _timeout: 3
 --- !u!1 &7227495776854297742
 GameObject:
   m_ObjectHideFlags: 0
@@ -205,31 +205,31 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 1
+  m_Time: 0.225
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1
+    widthMultiplier: 0.02
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.3444221
-        value: 0.007996678
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 0.61738586
-        value: 0.0014343262
+        time: 0.3307953
+        value: 0.99572754
         inSlope: 0
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.83725697
+        value: 0
+        inSlope: -0.5742361
+        outSlope: -0.5742361
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.2829353
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -268,6 +268,6 @@ TrailRenderer:
     textureMode: 0
     shadowBias: 0.5
     generateLightingData: 0
-  m_MinVertexDistance: 1
-  m_Autodestruct: 1
+  m_MinVertexDistance: 0.5
+  m_Autodestruct: 0
   m_Emitting: 1
