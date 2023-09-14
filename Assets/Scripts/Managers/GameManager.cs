@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DataTypes;
@@ -25,6 +26,7 @@ namespace Managers
         public static int _level = 1;
         private int _score;
         private float _timer;
+        private GameObject _gun;
         public static GameManager Instance { get; private set; }
 
         protected void Awake()
@@ -42,6 +44,7 @@ namespace Managers
 
         private void Start()
         {
+            _gun = GameObject.FindWithTag("Gun");
             StartLevel();
         }
 
@@ -65,6 +68,15 @@ namespace Managers
             SetNextSpawnTime();
         }
 
+        public void SetGameOver()
+        {
+            ReleaseAllEnemies();
+            _gameOver = true;
+            _isPlaying = false;
+            _gun.gameObject.SetActive(false);
+            PlayerHUDManager.Instance.GameOver();
+            //TODO: show scores, maybe sound, return to main menu after a few seconds
+        }
         private void OnGameOver()
         {
             _score = 0;
@@ -86,22 +98,27 @@ namespace Managers
                 PlayerHUDManager.Instance.SetTime(_timer);
             }
         }
-        
+
         private void SpawnNewEnemy()
         {
             var newEnemy = EnemySpawner.BaseInstance.Spawn();
-            var spawnPoint = getSpawner();
+            var spawnPoint = GetSpawner();
             
             //resets the position of the zombie from the pool
             Vector3 spawnPosition = spawnPoint.transform.position;
             newEnemy.transform.position = spawnPosition;
             
-            newEnemy.Initialize(spawnPoint.transform.position, 4, getEnemySpeed());
+            newEnemy.Initialize(spawnPoint.transform.position, GetEnemyHealth(), GetEnemySpeed());
 
             AudioManager.Instance.PlaySoundEffect(spawnPoint.AudioSource, SoundType.EnemySpawn);
         }
+        
+        private void SetNextSpawnTime()
+        {
+            _timeToNextSpawn = Random.Range(_minimumDelayBetweenSpanws, _maxDelayBetweenSpanws);
+        }
 
-        private float getEnemySpeed()
+        private float GetEnemySpeed()
         {
             switch (_level)
             {
@@ -111,7 +128,18 @@ namespace Managers
             }
         }
 
-        private EnemySpawnPoint getSpawner()
+        private int GetEnemyHealth()
+        {
+            switch (_level)
+            {
+                case 1: return Random.Range(3, 4);
+                case 2: return Random.Range(4, 5);
+                case 3: return Random.Range(5, 7);
+                default: return 4;
+            }
+        }
+        
+        private EnemySpawnPoint GetSpawner()
         {
             switch (_level)
             {
@@ -169,10 +197,6 @@ namespace Managers
                 enemy.Die();
             }
         }
-
-        private void SetNextSpawnTime()
-        {
-            _timeToNextSpawn = Random.Range(_minimumDelayBetweenSpanws, _maxDelayBetweenSpanws);
-        }
+        
     }
 }

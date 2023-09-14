@@ -74,7 +74,7 @@ public class Enemy : MonoBehaviour
                 _health -= 3;
                 break;
             case HitType.LimbShot:
-                _health -= 1;
+                _health -= 2;
                 break;
         }
         var shouldDestory = _health <= 0;

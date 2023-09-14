@@ -1,3 +1,4 @@
+using Managers;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
@@ -15,7 +16,12 @@ public class PlayerHealth : MonoBehaviour
     {
         // Subtract 25 hp on hit from current health
         _playerHealth -= _damageHit;
+        
         // Update the health bar with the new health value
         healthBar.UpdateHealth(_playerHealth);
+        
+        if(_playerHealth <= 0)
+        GameManager.Instance.SetGameOver();
+
     }
 }

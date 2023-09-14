@@ -10,6 +10,7 @@ TagManager:
   - EnemyTorso
   - EnemyHead
   - AttackTrigger
+  - Gun
   layers:
   - Default
   - TransparentFX

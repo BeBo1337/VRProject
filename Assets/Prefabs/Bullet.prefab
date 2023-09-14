@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 8188911605537612941}
-  _forceMultiplier: 5
+  _forceMultiplier: 20
   _timeout: 3
 --- !u!1 &7227495776854297742
 GameObject:

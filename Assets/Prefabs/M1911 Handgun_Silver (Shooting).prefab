@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: M1911 Handgun_Silver (Shooting)
       objectReference: {fileID: 0}
+    - target: {fileID: 7757947126742549135, guid: 5c59210965ffbcc4093fe99a29edb777, type: 3}
+      propertyPath: m_TagString
+      value: Gun
+      objectReference: {fileID: 0}
     - target: {fileID: 7763809825007691001, guid: 5c59210965ffbcc4093fe99a29edb777, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -84,15 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6be84e4d7829855419c06b94e56bd135, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  casingPrefab: {fileID: 6804990658058999119, guid: e3fcdb8aebb4ea647a367011610d1ec0, type: 3}
   muzzleFlashPrefab: {fileID: 1782395880954752, guid: 3dd9cf2e209c504448f1c4c6835675cf, type: 3}
   gunAnimator: {fileID: 3339811231522562192}
   barrelLocation: {fileID: 3942582856445837448}
-  casingExitLocation: {fileID: 5512466676562281669}
   destroyTimer: 2
-  ejectPower: 150
---- !u!4 &5512466676562281669 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1267406449795952462, guid: 5c59210965ffbcc4093fe99a29edb777, type: 3}
-  m_PrefabInstance: {fileID: 6707702966323522443}
-  m_PrefabAsset: {fileID: 0}
