@@ -11,12 +11,17 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _movementSpeed;
     [SerializeField] private Animator _animator; 
     [SerializeField] private AudioSource _audioSource;
+    public AudioSource AudioSource => _audioSource;
     
     private PlayerHealth _playerHealth;
     private int _health;
     private bool _isMoving;
     public bool isDead;
 
+    private void Awake()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
     private void Update()
     {
         MoveTowardsPlayer();
@@ -83,9 +88,8 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
-        // AudioManager.Instance.PlaySoundEffect(SoundType.EnemyExplosion);
-        // TODO: effect , sound , animation 
-        
+        if(!GameManager._gameOver)
+            AudioManager.Instance.PlaySoundEffect(_audioSource, SoundType.EnemyDying);
         isDead = true;
         _isMoving = false;
         _animator.Play("ZombieDie");

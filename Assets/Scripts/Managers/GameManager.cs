@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using DataTypes;
 using Framework;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 namespace Managers
@@ -62,7 +62,7 @@ namespace Managers
 
         private void StartActualGame()
         {
-            //AudioManager.Instance.PlayMusic(SoundType.BattleMusic);
+            AudioManager.Instance.PlayMusic(SoundType.BattleMusic);
             _isPlaying = true;
             SpawnNewEnemy();
             SetNextSpawnTime();
@@ -70,12 +70,20 @@ namespace Managers
 
         public void SetGameOver()
         {
-            ReleaseAllEnemies();
             _gameOver = true;
             _isPlaying = false;
-            _gun.gameObject.SetActive(false);
+            ReleaseAllEnemies();
             PlayerHUDManager.Instance.GameOver();
+            AudioManager.Instance.PlaySoundEffect(SoundType.GameOver);
+            _gun.gameObject.SetActive(false);
             //TODO: show scores, maybe sound, return to main menu after a few seconds
+            // Load the "MainMenu" scene after 5 seconds
+            Invoke("LoadMainMenu", 5f);
+        }
+
+        private void LoadMainMenu()
+        {
+            SceneManager.LoadScene("MainMenu"); // Replace "MainMenu" with the actual scene name
         }
         private void OnGameOver()
         {
@@ -109,7 +117,6 @@ namespace Managers
             newEnemy.transform.position = spawnPosition;
             
             newEnemy.Initialize(spawnPoint.transform.position, GetEnemyHealth(), GetEnemySpeed());
-
             AudioManager.Instance.PlaySoundEffect(spawnPoint.AudioSource, SoundType.EnemySpawn);
         }
         
@@ -154,6 +161,7 @@ namespace Managers
         
         public void BulletHitEnemy(Bullet bullet, Enemy enemy, HitType bodyPartHit)
         {
+            AudioManager.Instance.PlaySoundEffect(enemy.AudioSource, SoundType.EnemyHit);
             BulletSpawner.BaseInstance.Release(bullet);
             if (!enemy.isDead)
             {

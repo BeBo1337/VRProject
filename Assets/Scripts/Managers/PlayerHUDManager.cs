@@ -20,8 +20,6 @@ namespace Managers
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
-                
                 _countdown.gameObject.SetActive(false);
             }
             else
@@ -48,11 +46,12 @@ namespace Managers
         {
             SetInactive();
             StartCoroutine(GameOverAnimation());
+            _screenOverlay.color = Color.clear;
         }
 
         private IEnumerator GameOverAnimation()
         {
-            float duration = 2.0f; // Adjust the duration as needed
+            float duration = 2.0f; 
             float elapsedTime = 0.0f;
             Color startColor = Color.clear; // Start with a transparent color
             Color targetColor = Color.red; // Change this to the desired end color

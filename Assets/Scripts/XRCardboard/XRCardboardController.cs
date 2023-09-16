@@ -25,6 +25,7 @@ namespace XRCardboard
         private Quaternion _attitude;
         private Vector2 _dragDegrees;
         private float _defaultFov;
+        private const string menuScene = "MainMenu";
 
         public Transform CameraTransform => cameraTransform;
         public Camera Camera => _camera;
@@ -42,8 +43,6 @@ namespace XRCardboard
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
-                
                 _camera = cameraTransform.GetComponent<Camera>();
                 _poseDriver = cameraTransform.GetComponent<TrackedPoseDriver>();
                 _defaultFov = _camera.fieldOfView;

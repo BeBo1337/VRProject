@@ -3,8 +3,10 @@ namespace DataTypes
     public enum SoundType
     {
         EnemySpawn = 0,
-        EnemyExplosion = 1,
+        EnemyHit = 1,
         Shoot = 2,
-        BattleMusic = 100,
+        BattleMusic = 3,
+        EnemyDying = 4,
+        GameOver = 5,
     }
 }

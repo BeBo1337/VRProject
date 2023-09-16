@@ -11,6 +11,8 @@ public class ObjectController : MonoBehaviour
     private Renderer _myRenderer;
     [SerializeField] private TMP_Text HiddenText;
     private const string gameScene = "GameScene";
+    private const string playGameText = "Play Game";
+    private const string exitText = "Exit";
     public void Start()
     {
         _myRenderer = GetComponent<Renderer>();
@@ -36,11 +38,11 @@ public class ObjectController : MonoBehaviour
             if (childTmpText != null)
             {
                 // If the child TMP text has text, then load the game scene
-                if (childTmpText.text == "Play Game")
+                if (childTmpText.text == playGameText)
                 {
                     SceneManager.LoadScene(gameScene);
                 }
-                else if (childTmpText.text == "Exit")
+                else if (childTmpText.text == exitText)
                 {
                     // Otherwise, exit the game
                     Application.Quit();
