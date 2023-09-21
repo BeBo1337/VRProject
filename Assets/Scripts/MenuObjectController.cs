@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
-public class ObjectController : MonoBehaviour
+public class MenuObjectController : MonoBehaviour
 {
     // The material to use when this object is inactive (not being gazed at).
     public Material InactiveMaterial;

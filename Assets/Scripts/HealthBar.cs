@@ -1,12 +1,10 @@
-using System;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
+
 
 public class HealthBar : MonoBehaviour
 {
     [SerializeField] private RectTransform  healthBarFill;
-    [SerializeField] private float maxWidth = 300f; // Adjust the maximum health as needed
+    [SerializeField] private float maxWidth = 300f;
 
     public void UpdateHealth(float currentHealth)
     {

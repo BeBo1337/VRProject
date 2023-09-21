@@ -62,10 +62,6 @@ namespace Managers
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
-
-            // Add your bloody animation here, e.g., particle effects or sprite animations
-
-            // You can then reset the screen overlay color to transparent if needed
         }
 
         public void SetTime(float time)

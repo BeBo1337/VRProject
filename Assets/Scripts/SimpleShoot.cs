@@ -1,23 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Managers;
-using UnityEngine.SceneManagement;
 
 [AddComponentMenu("Nokobot/Modern Guns/Simple Shoot")]
 public class SimpleShoot : MonoBehaviour
 {
     public GameObject muzzleFlashPrefab;
-    private Scene currentScene; 
     [SerializeField] private Animator gunAnimator;
     [SerializeField] private Transform barrelLocation;
     [SerializeField] private float destroyTimer = 2f;
-
-    private const string mainMenuSceneName = "MainMenu";
+    
+    private const string fire1String = "Fire1";
+    private const string fireString = "Fire";
 
     void Start()
     {
-        currentScene = SceneManager.GetActiveScene();
         if (barrelLocation == null)
             barrelLocation = transform;
 
@@ -27,10 +23,9 @@ public class SimpleShoot : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && GameManager.Instance.IsPlaying)
-        {
-            //Calls animation on the gun that has the relevant animation events that will fire
-            gunAnimator.SetTrigger("Fire");
+        if (Input.GetButtonDown(fire1String) && GameManager.Instance.IsPlaying)
+        {//Calls animation on the gun that has the relevant animation events that will fire
+            gunAnimator.SetTrigger(fireString);
         }
     }
 
@@ -52,12 +47,6 @@ public class SimpleShoot : MonoBehaviour
 
             // Creating a bullet and adding force to it in direction of the barrel
             var newBullet = BulletSpawner.BaseInstance.Spawn();
-            // reset the bullet trail to return to pool
-            var trail = newBullet.GetComponentInChildren<TrailRenderer>();
-            if (trail != null)
-            {
-                trail.Clear();
-            }
             newBullet.SetPosition(barrelLocation.position);
             newBullet.ShootInDirection(barrelLocation.transform.forward);
         }
