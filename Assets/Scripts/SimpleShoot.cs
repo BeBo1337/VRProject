@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Managers;
 
-[AddComponentMenu("Nokobot/Modern Guns/Simple Shoot")]
+// Shooting Logic
 public class SimpleShoot : MonoBehaviour
 {
     public GameObject muzzleFlashPrefab;
@@ -9,7 +9,6 @@ public class SimpleShoot : MonoBehaviour
     [SerializeField] private Transform barrelLocation;
     [SerializeField] private float destroyTimer = 2f;
     
-    private const string fire1String = "Fire1";
     private const string fireString = "Fire";
 
     void Start()
@@ -23,14 +22,14 @@ public class SimpleShoot : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown(fire1String) && GameManager.Instance.IsPlaying)
-        {//Calls animation on the gun that has the relevant animation events that will fire
+        if (Input.anyKeyDown && GameManager.Instance.IsPlaying)
+        {   //Calls animation on the gun that has the relevant animation event that will call "Shoot()"
             gunAnimator.SetTrigger(fireString);
         }
     }
 
 
-    //This function creates the bullet behavior
+    //This function creates the bullet behavior, being called as an Animation Event from 'Fire' animation
     void Shoot()
     {
         if (GameManager.Instance.IsPlaying)

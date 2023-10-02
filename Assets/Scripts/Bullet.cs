@@ -3,6 +3,7 @@ using DataTypes;
 using Managers;
 using UnityEngine;
 
+//Bullet Logic
 public class Bullet : MonoBehaviour
 {
     [SerializeField] private Rigidbody _rigidbody;
@@ -14,6 +15,8 @@ public class Bullet : MonoBehaviour
     protected const string EnemyLeg = "EnemyLeg";
     protected const string EnemyTorso = "EnemyTorso";
     protected const string EnemyHead = "EnemyHead";
+    
+    private TrailRenderer trailRenderer;
     private void OnEnable()
     {
         StartCoroutine(Timeout()); // Start a coroutine for bullet timeout
@@ -32,7 +35,6 @@ public class Bullet : MonoBehaviour
         {
             return;
         }
-
         var forceVector = direction * _forceMultiplier; // Calculate the shooting force vector
         _rigidbody.AddForce(forceVector, ForceMode.Impulse); // Apply the force to the bullet
         AudioManager.Instance.PlaySoundEffect(SoundType.Shoot);
@@ -54,8 +56,10 @@ public class Bullet : MonoBehaviour
         {
             Enemy enemy = FindEnemyInHierarchy(other.gameObject);
             if (enemy != null)
-            {// Inform the GameManager that the bullet hit an enemy and provide the details
-                GameManager.Instance.BulletHitEnemy(this, enemy, bodyPartHit);
+            {
+                BulletSpawner.BaseInstance.Release(this); // Return the bullet to the pool.
+                // Inform the GameManager that the bullet hit an enemy and provide the details
+                GameManager.Instance.BulletHitEnemy(enemy, bodyPartHit);
             }
         }
     }

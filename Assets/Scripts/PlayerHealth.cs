@@ -1,10 +1,11 @@
 using Managers;
 using UnityEngine;
 
+// Health Logic
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField] public float _playerHealth = 100;
-    [SerializeField] private float _damageHit = 25f;
+    [SerializeField] public float _playerHealth;
+    [SerializeField] private float _damageHit;
     public HealthBar healthBar;
 
     private void Awake()
@@ -21,7 +22,7 @@ public class PlayerHealth : MonoBehaviour
         healthBar.UpdateHealth(_playerHealth);
         
         if(_playerHealth <= 0)
-        GameManager.Instance.SetGameOver();
+            GameManager.Instance.SetGameOver();
 
     }
 }

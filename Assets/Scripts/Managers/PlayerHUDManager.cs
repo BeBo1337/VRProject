@@ -10,6 +10,12 @@ namespace Managers
         [SerializeField] private TextMeshProUGUI _score;
         [SerializeField] private TextMeshProUGUI _timer;
         [SerializeField] private TextMeshProUGUI _countdown;
+
+        [SerializeField] private GameObject _result;
+        [SerializeField] private TextMeshProUGUI _toptext;
+        [SerializeField] private TextMeshProUGUI _finalscore;
+        [SerializeField] private TextMeshProUGUI _finaltime;
+        [SerializeField] private TextMeshProUGUI _countdownmenu;
         [SerializeField] private Image _screenOverlay;
 
         public static PlayerHUDManager Instance { get; private set; }
@@ -26,12 +32,14 @@ namespace Managers
             {
                 Destroy(gameObject);
             }
+            
+            _result.SetActive(false);
         }
 
         public IEnumerator PlayCountdownAnimation()
         {
-            _countdown.gameObject.SetActive(true);
             _countdown.text = "3";
+            _countdown.gameObject.SetActive(true);
             yield return new WaitForSeconds(1);
             _countdown.text = "2";
             yield return new WaitForSeconds(1);
@@ -42,26 +50,61 @@ namespace Managers
             _countdown.gameObject.SetActive(false);
         }
 
-        public void GameOver()
+        public void GameOver(int finalScore, float finalTime)
         {
             SetInactive();
-            StartCoroutine(GameOverAnimation());
-            _screenOverlay.color = Color.clear;
+            StartCoroutine(GameOverHandler(finalScore, finalTime));
         }
 
-        private IEnumerator GameOverAnimation()
+        // Handles the "Lose" fade to red if lost, UI texts for the end screen.
+        private IEnumerator GameOverHandler(int finalScore, float finalTime)
         {
+            int n = 5;
             float duration = 2.0f; 
             float elapsedTime = 0.0f;
-            Color startColor = Color.clear; // Start with a transparent color
-            Color targetColor = Color.red; // Change this to the desired end color
+            Color startColor = Color.clear;
+            Color targetColor = Color.red;
 
-            while (elapsedTime < duration)
+            if (finalScore < 30)
             {
-                _screenOverlay.color = Color.Lerp(startColor, targetColor, elapsedTime / duration);
-                elapsedTime += Time.deltaTime;
-                yield return null;
+                while (elapsedTime < duration)
+                {
+                    _screenOverlay.color = Color.Lerp(startColor, targetColor, elapsedTime / duration);
+                    elapsedTime += Time.deltaTime;
+                    yield return null;
+                }
             }
+            else
+            {
+                _toptext.text = "You Won!";
+                _toptext.color = Color.yellow;
+                n = 8;
+            }
+
+            LeaderboardManager.Instance.GameOver(finalScore);
+            _finalscore.text = "You killed " + finalScore + " Zombies";
+            _finaltime.text = "You took " + finalTime + " Seconds";
+            _result.SetActive(true);
+            StartCoroutine(PlayCountdownToMenu(n));
+        }
+        
+        public IEnumerator PlayCountdownToMenu(int n)
+        {
+            _countdownmenu.text = "Returning to menu in " + n + "...";
+            _countdownmenu.gameObject.SetActive(true);
+            for (int i = n-1; i >= 0; i--)
+            {
+                yield return new WaitForSeconds(1);
+                _countdownmenu.text = "Returning to menu in " + i + "...";
+            }
+        }
+      
+        public IEnumerator NextLevelAnimation()
+        {
+            _countdown.text = "Level " + GameManager._level + " complete";
+            _countdown.gameObject.SetActive(true);
+            yield return new WaitForSeconds(1);
+            _countdown.gameObject.SetActive(false);
         }
 
         public void SetTime(float time)
@@ -80,12 +123,6 @@ namespace Managers
             _timer.gameObject.SetActive(false);
             _countdown.gameObject.SetActive(false);
         }
-
-        public void SetActive()
-        {
-            _score.gameObject.SetActive(true);
-            _timer.gameObject.SetActive(true);
-            _countdown.gameObject.SetActive(true);
-        }
+        
     }
 }

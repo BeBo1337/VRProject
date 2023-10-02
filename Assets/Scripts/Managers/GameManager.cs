@@ -13,10 +13,8 @@ namespace Managers
         [Header("Enemy Settings")]
         [SerializeField] private List<EnemySpawnPoint> _spawnPointsLVL1;
         [SerializeField] private List<EnemySpawnPoint> _spawnPointsLVL2;
-        [SerializeField] private float _minimumDelayBetweenSpanws;
-        [SerializeField] private float _maxDelayBetweenSpanws;
-        // TODO: difficulty multiplier
-        
+        [SerializeField] private List<EnemySpawnPoint> _spawnPointsLVL3;
+
         private float _timeToNextSpawn;
         private bool _isPlaying;
         public bool IsPlaying => _isPlaying;
@@ -73,19 +71,28 @@ namespace Managers
             SetNextSpawnTime(); 
         }
 
-        // Sets the game state to "Game Over" and performs cleanup actions.
+        // Sets the game state to "Game Over" and perform cleanup actions.
         public void SetGameOver()
         {
-            _gameOver = true; 
+            _gameOver = true;
             _isPlaying = false; // Stop spawning enemies.
             ReleaseAllEnemies(); // Destroy all remaining enemies.
-            PlayerHUDManager.Instance.GameOver(); // Display the game over UI.
-            AudioManager.Instance.PlaySoundEffect(SoundType.GameOver); // Play game over sound.
             _gun.gameObject.SetActive(false);
+            PlayerHUDManager.Instance.GameOver(_score, _timer); // Display the game over UI.
+            
+            if(_score < 30) // Lost -> play sound
+                AudioManager.Instance.PlaySoundEffect(SoundType.GameOver); // Play game over sound.
 
-            //TODO: Implement additional functionality here, such as displaying scores and returning to the main menu.
-            // Load the "MainMenu" scene after 5 seconds
-            Invoke("LoadMainMenu", 5f);
+            ResetGame();
+            Invoke("LoadMainMenu", 8f);
+        }
+
+        private void ResetGame()
+        {
+            _gameOver = false;
+            _level = 1;
+            _score = 0;
+            _timer = 0;
         }
 
         // Loads the main menu scene.
@@ -93,14 +100,7 @@ namespace Managers
         {
             SceneManager.LoadScene(mainMenuString);
         }
-
-        // Called when the game over state is reached.
-        private void OnGameOver()
-        {
-            _score = 0;
-            _timer = 0;
-        }
-
+        
         // This method is called once per frame while the game is running.
         public void Update()
         {
@@ -136,7 +136,22 @@ namespace Managers
         // Sets a random time delay for the next enemy spawn.
         private void SetNextSpawnTime()
         {
-            _timeToNextSpawn = Random.Range(_minimumDelayBetweenSpanws, _maxDelayBetweenSpanws);
+            switch (_level)
+            {
+                case 1:
+                    _timeToNextSpawn = Random.Range(3f, 5f);
+                    break;
+                case 2:
+                    _timeToNextSpawn = Random.Range(3f, 4.5f);
+                    break;
+                case 3:
+                    _timeToNextSpawn = Random.Range(2.5f, 3.5f);
+                    break;
+                default:
+                    _timeToNextSpawn = Random.Range(3f, 5f);
+                    break;
+            }
+            
         }
 
         // Determine the speed of the spawned enemy based on the current game level.
@@ -148,6 +163,8 @@ namespace Managers
                     return Random.Range(0.5f, 0.75f);
                 case 2:
                     return Random.Range(0.65f, 1f);
+                case 3:
+                    return Random.Range(0.7f, 1.1f);
                 default:
                     return Random.Range(0.5f, 0.75f);
             }
@@ -161,9 +178,9 @@ namespace Managers
                 case 1:
                     return Random.Range(3, 4);
                 case 2:
-                    return Random.Range(4, 5);
+                    return Random.Range(3, 5);
                 case 3:
-                    return Random.Range(5, 7);
+                    return Random.Range(4, 5);
                 default:
                     return 4;
             }
@@ -178,17 +195,16 @@ namespace Managers
                     return _spawnPointsLVL1.GetRandom();
                 case 2:
                     return _spawnPointsLVL2.GetRandom();
+                case 3:
+                    return _spawnPointsLVL3.GetRandom();
                 default:
                     return _spawnPointsLVL1.GetRandom();
             }
         }
 
         // Handle bullet hit events on enemies.
-        public void BulletHitEnemy(Bullet bullet, Enemy enemy, HitType bodyPartHit)
+        public void BulletHitEnemy(Enemy enemy, HitType bodyPartHit)
         {
-            AudioManager.Instance.PlaySoundEffect(enemy.AudioSource, SoundType.EnemyHit); // Play hit sound effect.
-            BulletSpawner.BaseInstance.Release(bullet); // Return the bullet to the pool.
-
             if (!enemy.isDead)
             {
                 var shouldDestroy = enemy.ReduceHealth(bodyPartHit); // Reduce enemy health.
@@ -199,14 +215,19 @@ namespace Managers
                     PlayerHUDManager.Instance.SetScore(_score);
                     enemy.Die(); // Destroy the enemy.
 
-                    if (_score >= 2 && _level == 1)
+                    if ((_score >= 5 && _level == 1) || (_score >= 15 && _level == 2))
                     {
-                        // If the score reaches a certain point in level 1, trigger level progression.
-                        PathFollowing.isMoving = true; // Stop zombie movement.
+                        // If the score reaches the checkpoint goal, trigger level progression.
+                        StartCoroutine(PlayerHUDManager.Instance.NextLevelAnimation());
+                        PathFollowing.isMoving = true; 
                         _isPlaying = false; // Stop spawning enemies.
-                        _maxDelayBetweenSpanws = 4; 
-                        ReleaseAllEnemies(); // Destroy all remaining enemies.
+                        ReleaseAllEnemies(); // Release all remaining enemies.
                         StartCoroutine(WaitForPathCompletion()); // Wait for path following to complete.
+                    }
+                    else if (_score >= 30 && _level == 3)
+                    {
+                        // Trigger gameover not from death = win
+                        SetGameOver();
                     }
                 }
                 else
@@ -216,22 +237,24 @@ namespace Managers
             }
         }
 
-        // Wait for the zombie path following to complete before restarting the level.
+        // Wait for the player path following to the next level to complete before starting the level.
         private IEnumerator WaitForPathCompletion()
         {
             yield return new WaitUntil(() => !PathFollowing.isMoving);
 
             // After the path is completed, restart the level.
-            StartLevel();
             _level++;
+            StartLevel();
         }
 
-        // Destroy all enemies in the scene.
+        // Releases all enemies in the scene.
         private void ReleaseAllEnemies()
         {
             Enemy[] enemies = FindObjectsOfType<Enemy>();
             foreach (Enemy enemy in enemies)
             {
+                if (_gameOver)
+                    enemy.gameObject.SetActive(false); 
                 enemy.Die(); 
             }
         }
